@@ -1,9 +1,9 @@
 /* Casino del Caos: guarda la app en el dispositivo para que abra sin internet.
    Al publicar cambios, subí el número de VERSION para que todos reciban la nueva versión. */
-const VERSION = 'v2';
+const VERSION = 'v3';
 const CACHE = 'casino-del-caos-' + VERSION;
 const ASSETS = [
-  './', './index.html', './manifest.webmanifest',
+  './', './index.html', './manifest.webmanifest', './cloud.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png',
   './fonts/lilita-one-400.woff2', './fonts/nunito-700.woff2', './fonts/nunito-800.woff2', './fonts/nunito-900.woff2'
 ];
