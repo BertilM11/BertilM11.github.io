@@ -3,56 +3,51 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#3C46F0" />
+  <meta name="theme-color" content="#F6F6FA" />
   <meta name="description" content="Programas y juegos hechos por Bertil Raxon." />
   <title>Bertil Raxon</title>
   <link rel="icon" type="image/png" href="assets/icons/br-192.png" />
   <link rel="apple-touch-icon" href="assets/icons/br-180.png" />
-  <link rel="preload" href="assets/fonts/lilita-one-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/nunito-900.woff2" as="font" type="font/woff2" crossorigin />
   <style>
-    /* Plan: página-índice estilo sticker; encabezado con monograma y nombre, debajo una grilla de tarjetas (una por programa) con contorno de tinta y sombra dura. */
-    @font-face{font-family:"Lilita One";font-weight:400;font-display:swap;src:url(assets/fonts/lilita-one-400.woff2) format("woff2")}
+    /* Plan: página limpia y clara; encabezado con monograma y nombre grande, lista de programas en tarjetas sobrias con un solo acento azul. */
     @font-face{font-family:"Nunito";font-weight:700;font-display:swap;src:url(assets/fonts/nunito-700.woff2) format("woff2")}
     @font-face{font-family:"Nunito";font-weight:800;font-display:swap;src:url(assets/fonts/nunito-800.woff2) format("woff2")}
     @font-face{font-family:"Nunito";font-weight:900;font-display:swap;src:url(assets/fonts/nunito-900.woff2) format("woff2")}
     :root{
       color-scheme:light;
-      --paper:#FFFDF6;
-      --ink:#1A1446;
-      --stage:#3C46F0;
-      --sun:#FFD43B;
-      --pop:#FF4F8B;
-      --muted:#5D5885;
-      --display:"Lilita One","Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;
-      --body:"Nunito",ui-rounded,"Arial Rounded MT Bold",-apple-system,system-ui,sans-serif;
-      --bw:3px;
+      --bg:#F6F6FA;
+      --card:#FFFFFF;
+      --ink:#16142B;
+      --muted:#6B6880;
+      --line:#E4E2EE;
+      --accent:#3C46F0;
+      --body:"Nunito",ui-rounded,-apple-system,system-ui,"Segoe UI",sans-serif;
     }
     *{box-sizing:border-box}
     html{-webkit-text-size-adjust:100%}
-    body{margin:0;min-height:100vh;font-family:var(--body);font-weight:700;color:var(--ink);background-color:var(--paper);background-image:radial-gradient(rgba(26,20,70,.08) 1.6px,transparent 2px);background-size:22px 22px}
-    a{color:inherit}
-    a:focus-visible,button:focus-visible{outline:3px solid var(--stage);outline-offset:3px}
-    .wrap{max-width:1040px;margin:0 auto;padding:calc(36px + env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--body);font-weight:700}
+    a:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:12px}
+    .wrap{max-width:960px;margin:0 auto;padding:calc(48px + env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left))}
 
-    .hero{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-bottom:44px}
-    .mono{width:92px;height:92px;flex:none;display:grid;place-items:center;border:var(--bw) solid var(--ink);border-radius:24px;background:var(--stage);box-shadow:6px 6px 0 var(--ink);transform:rotate(-5deg);font-family:var(--display);font-size:44px;color:#fff;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;text-shadow:3px 3px 0 var(--ink)}
-    .hero h1{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(46px,8vw,78px);line-height:.95;letter-spacing:.5px;text-shadow:5px 5px 0 var(--sun);text-wrap:balance}
-    .hero p{margin:10px 0 0;font-size:clamp(17px,2.2vw,20px);font-weight:800;color:var(--muted);max-width:34em;line-height:1.4}
+    .hero{display:flex;align-items:center;gap:18px;margin-bottom:56px}
+    .mono{width:64px;height:64px;flex:none;display:grid;place-items:center;border-radius:18px;background:var(--accent);color:#fff;font-weight:900;font-size:26px;letter-spacing:.5px;box-shadow:0 8px 20px rgba(60,70,240,.28);transform:rotate(-4deg)}
+    .hero h1{margin:0;font-size:clamp(34px,6vw,52px);font-weight:900;line-height:1;letter-spacing:-.5px}
+    .hero p{margin:8px 0 0;font-size:17px;color:var(--muted);font-weight:700}
 
-    .apps h2{margin:0 0 18px;font-family:var(--display);font-weight:400;font-size:28px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:24px}
-    .app{display:flex;flex-direction:column;gap:14px;padding:20px;border:var(--bw) solid var(--ink);border-radius:24px;background:#fff;box-shadow:7px 7px 0 var(--ink)}
-    .appTop{display:flex;align-items:center;gap:16px}
-    .appTop img{width:76px;height:76px;flex:none;border:var(--bw) solid var(--ink);border-radius:20px;box-shadow:3px 3px 0 var(--ink);display:block}
-    .app h3{margin:0;font-family:var(--display);font-weight:400;font-size:28px;line-height:1.05}
-    .app p{margin:0;font-size:16px;line-height:1.45;color:var(--ink)}
-    .tags{display:flex;flex-wrap:wrap;gap:7px;margin:0;padding:0;list-style:none}
-    .tags li{border:2px solid var(--ink);border-radius:30px;padding:3px 11px;font-size:13px;font-weight:900;background:var(--paper)}
-    .open{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:10px 20px;border:var(--bw) solid var(--ink);border-radius:16px;background:var(--sun);box-shadow:4px 4px 0 var(--ink);font-family:var(--display);font-size:22px;text-decoration:none;transition:transform .08s ease,box-shadow .08s ease}
-    .open:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
-
-    footer{margin-top:56px;font-size:14px;font-weight:800;color:var(--muted)}
-    @media (max-width:520px){.hero{gap:16px}.mono{width:72px;height:72px;font-size:34px;border-radius:18px}}
+    .apps h2{margin:0 0 16px;font-size:14px;font-weight:900;color:var(--muted);letter-spacing:.3px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+    .app{display:flex;flex-direction:column;gap:14px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:0 2px 6px rgba(22,20,43,.04);text-decoration:none;color:inherit;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+    .app:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(22,20,43,.10);border-color:#D2D0E2}
+    .appTop{display:flex;align-items:center;gap:14px}
+    .appTop img{width:60px;height:60px;flex:none;border-radius:16px;display:block}
+    .app h3{margin:0;font-size:21px;font-weight:900;line-height:1.15}
+    .app .kind{display:block;margin-top:3px;font-size:13px;color:var(--muted);font-weight:800}
+    .app p{margin:0;font-size:15px;line-height:1.5;color:#3E3B55}
+    .open{display:inline-flex;align-items:center;justify-content:center;gap:8px;align-self:flex-start;margin-top:2px;padding:10px 18px;border-radius:12px;background:var(--accent);color:#fff;font-weight:900;font-size:15px}
+    .app:hover .open{background:#2F38D6}
+    footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+    @media (max-width:520px){.wrap{padding-top:calc(32px + env(safe-area-inset-top))}.hero{margin-bottom:40px}.mono{width:54px;height:54px;font-size:22px;border-radius:15px}}
     @media (prefers-reduced-motion:reduce){*{transition:none!important}}
   </style>
 </head>
@@ -69,17 +64,14 @@
     <section class="apps" aria-labelledby="appsTitle">
       <h2 id="appsTitle">Programas</h2>
       <div class="grid">
-        <article class="app">
+        <a class="app" href="casino-del-caos/">
           <div class="appTop">
-            <img src="casino-del-caos/icons/icon-192.png" alt="" width="76" height="76" />
-            <h3>Casino del Caos</h3>
+            <img src="casino-del-caos/icons/icon-192.png" alt="" width="60" height="60" />
+            <div><h3>Casino del Caos</h3><span class="kind">Juego por equipos</span></div>
           </div>
-          <p>Estación de juego con cartas de reto al azar, tiempo por equipo y marcador para cinco equipos.</p>
-          <ul class="tags" aria-label="Características">
-            <li>Juego</li><li>iPad y celular</li><li>Funciona sin internet</li>
-          </ul>
-          <a class="open" href="casino-del-caos/">Abrir</a>
-        </article>
+          <p>Cartas de reto al azar, tiempo por equipo y marcador en vivo. Funciona en iPad, celular y compu, también sin internet.</p>
+          <span class="open">Abrir</span>
+        </a>
       </div>
     </section>
 
