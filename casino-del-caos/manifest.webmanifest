@@ -1,0 +1,17 @@
+{
+  "name": "Casino del Caos",
+  "short_name": "Casino Caos",
+  "description": "Estación de juego: cartas al azar, tiros por tiempo, cinco equipos y marcador.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#3C46F0",
+  "theme_color": "#3C46F0",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
