@@ -1,6 +1,6 @@
 /* Casino del Caos: guarda la app en el dispositivo para que abra sin internet.
    Al publicar cambios, subí el número de VERSION para que todos reciban la nueva versión. */
-const VERSION = 'v6';
+const VERSION = 'v7';
 const CACHE = 'casino-del-caos-' + VERSION;
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './cloud.js',
@@ -33,7 +33,8 @@ self.addEventListener('fetch', (event) => {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE);
       const cached = await cache.match('./index.html');
-      const network = fetch(req).then((res) => {
+      // no-cache: siempre pregunta al servidor si hay versión nueva (evita esperar el caché de 10 min de GitHub)
+      const network = fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' }).then((res) => {
         if (res.ok) cache.put('./index.html', res.clone());
         return res;
       });
