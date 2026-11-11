@@ -8,6 +8,12 @@
   <meta name="apple-mobile-web-app-title" content="Casino del Caos" />
   <meta name="description" content="Casino del Caos: cartas al azar, tiros por tiempo, cinco equipos, puntos editables y Jackpot final del encargado." />
   <title>Casino del Caos</title>
+  <script>
+  (function(){var res;var p=new Promise(function(r){res=r;});window.__cloudResolve=res;
+    setTimeout(function(){res(null);var st=document.getElementById('adminStatus');if(st&&st.dataset.initial==='1'){st.textContent='No se pudo conectar con Firebase. Revisá el internet y recargá la página.';}},12000);
+    window.claude={use:function(n){return p.then(function(api){return api?api.use(n):null;});}};})();
+  </script>
+  <script type="module" src="cloud.js"></script>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="mobile-web-app-capable" content="yes" />
   <link rel="manifest" href="manifest.webmanifest" />
@@ -420,6 +426,10 @@
         </div>
         <p class="fieldNote" id="modeNote">Pantalla y Control se usan juntos: abrí este mismo link en los dos dispositivos, con tu cuenta y con internet.</p>
       </section>
+      <section class="setSec" id="adminSec"><h3>Cuenta de administrador</h3>
+        <p class="fieldNote" id="adminStatus" data-initial="1">Conectando con Firebase…</p>
+        <button class="btn btnSmall btnWhite" id="adminBtn" type="button" disabled>Entrar con Google</button>
+      </section>
       <section class="setSec"><h3>Tiempo por equipo</h3>
         <select id="minutesSelect" class="fieldSelect" aria-label="Minutos por equipo"><option value="1">1 min</option><option value="2">2 min</option><option value="3">3 min</option><option value="4">4 min</option><option value="5">5 min</option><option value="6">6 min</option><option value="7">7 min</option><option value="8">8 min</option><option value="9">9 min</option><option value="10">10 min</option></select>
       </section>
@@ -711,7 +721,7 @@
 
   /* ---------- Ajustes ---------- */
   function fillSettings(){const g=state.cfg;for(let i=0;i<5;i++)$('#name'+i).value=teamName(i);g.cups.forEach((v,i)=>{$('#cup'+i).value=v;});$('#bonus').value=g.bonus;$('#jackpotCard').value=g.jackpotCard;g.final.forEach((v,i)=>{$('#final'+i).value=v;});$('#minutesSelect').value=String(state.minutes);}
-  function openSettings(){hideChallenge();fillSettings();document.querySelectorAll('.modeBtn').forEach(b=>{b.classList.toggle('sel',b.dataset.mode===mode);b.hidden=b.dataset.mode!=='solo'&&!room&&mode==='solo';b.disabled=b.dataset.mode!=='solo'&&!room;});$('#modeNote').textContent=room?'Pantalla y Control se usan juntos: abrí este mismo link en los dos dispositivos, con tu cuenta y con internet.':'En esta versión el iPad y el iPhone todavía no se pueden conectar entre sí. Por ahora eso funciona desde el link de Claude; en tu página se activa cuando conectemos Firebase.';$('#settingsOverlay').classList.add('show');}
+  function openSettings(){hideChallenge();fillSettings();document.querySelectorAll('.modeBtn').forEach(b=>{b.classList.toggle('sel',b.dataset.mode===mode);b.hidden=b.dataset.mode!=='solo'&&!room&&mode==='solo';b.disabled=b.dataset.mode!=='solo'&&!room;});$('#modeNote').textContent=room?'Pantalla y Control se usan juntos: abrí este mismo link en los dos dispositivos, con tu cuenta y con internet.':'Para usar Pantalla y Control, entrá como administrador (en «Cuenta de administrador», aquí abajo) en los dos dispositivos, con internet.';$('#settingsOverlay').classList.add('show');}
   function closeSettings(){const a=document.activeElement;if(a&&a.blur&&$('#settingsOverlay').contains(a))a.blur();$('#settingsOverlay').classList.remove('show');}
   function recalcSpecials(){const c=[0,1,2].map(i=>Number($('#cup'+i).value)||0);$('#bonus').value=c[0]*2;$('#jackpotCard').value=c[2]*2;$('#final0').value=c[0]*2;$('#final1').value=c[1]*2;$('#final2').value=c[2]*3;}
   function readSettingsForm(){
@@ -779,14 +789,15 @@
   function ctlAction(a,extra){
     if(Date.now()<busyUntil)return false;
     if(!sendCmd(a,extra))return false;
-    busyUntil=Date.now()+1500;renderControl();setTimeout(renderControl,1600);return true;
+    busyUntil=Date.now()+5000;renderControl();setTimeout(renderControl,5100);return true;
   }
   function onView(v,live){
     if(mode!=='control'||!v||typeof v!=='object'||!Array.isArray(v.teams)||v.teams.length!==5||!v.cur)return;
     if(!live&&viewLive&&Date.now()-viewAt<15000)return;
-    const prevRev=lastView?lastView.rev:-1;
+    const keyOf=x=>x?JSON.stringify(Object.assign({},x,{cur:Object.assign({},x.cur,{tl:0})})):'';
+    const changed=keyOf(v)!==keyOf(lastView);
     lastView=v;viewAt=Date.now();if(live)viewLive=true;
-    if(v.rev!==prevRev)busyUntil=0;
+    if(changed)busyUntil=0;
     state.cfg=normCfg(v.cfg);state.names=normNames(v.names);state.minutes=Math.max(1,Math.min(10,Number(v.minutes)||5));
     renderControl();
   }
