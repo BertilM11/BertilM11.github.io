@@ -224,6 +224,8 @@
     .confirmActions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
     .confirmActions .btn{min-width:150px}
     #settingsOverlay{z-index:25}
+    .closeX{position:sticky;top:0;float:right;z-index:2;margin:-6px -6px 6px 12px;width:46px;height:46px;display:grid;place-items:center;padding:0 0 3px;border:var(--bw) solid var(--ink);border-radius:50%;background:#fff;box-shadow:3px 3px 0 var(--ink);font-family:var(--display);font-size:30px;line-height:1;color:var(--ink)}
+    .closeX:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
     #confirmOverlay{z-index:30}
     #confirmNo[hidden],.modeBtn[hidden]{display:none}
 
@@ -387,6 +389,7 @@
 
   <div class="overlay" id="settingsOverlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
     <div class="dialog sheet">
+      <button class="closeX" id="settingsClose" type="button" aria-label="Cerrar ajustes">×</button>
       <h2 id="settingsTitle">Ajustes del encargado</h2>
       <section class="setSec"><h3>Nombres de los equipos</h3>
         <div class="fieldGrid">
@@ -913,6 +916,8 @@
   ['cup0','cup1','cup2'].forEach(id=>$('#'+id).addEventListener('input',recalcSpecials));
   $('#restoreDefaults').addEventListener('click',()=>{DEFAULT_CFG.cups.forEach((v,i)=>{$('#cup'+i).value=v;});recalcSpecials();});
   $('#settingsCancel').addEventListener('click',closeSettings);
+  $('#settingsClose').addEventListener('click',closeSettings);
+  $('#settingsOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeSettings();});
   $('#settingsSave').addEventListener('click',saveSettings);
   $('#timerResetBtn').addEventListener('click',()=>{closeSettings();resetTimerCurrent();});
   $('#resetCurrentBtn').addEventListener('click',()=>{closeSettings();resetCurrent();});
