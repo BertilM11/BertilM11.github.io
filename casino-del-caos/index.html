@@ -70,6 +70,8 @@
     .topActions{display:flex;align-items:center;justify-content:flex-end;gap:10px}
     .iconBtn{width:50px;height:50px;border-radius:15px;border:var(--bw) solid var(--ink);background:var(--paper);box-shadow:3px 3px 0 var(--ink);display:grid;place-items:center;font-family:var(--display);font-size:24px;padding:0}
     .iconBtn svg{width:22px;height:22px}
+    .homeBtn{background:var(--stage);color:#fff;font-size:21px;letter-spacing:.5px;-webkit-text-stroke:1.2px var(--ink);paint-order:stroke fill;text-shadow:2px 2px 0 var(--ink);text-decoration:none;transform:rotate(-4deg)}
+    body.mode-pantalla #homeBtn{display:none}
     .iconBtn[hidden],#installBtn[hidden]{display:none}
     #installBtn{min-height:38px;font-size:13px;padding:4px 12px}
     .iconBtn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
@@ -245,11 +247,13 @@
     /* Teléfonos */
     @media (max-width:600px){
       .logoSmall{font-size:17px}
-      .top{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand actions" "church church";row-gap:12px}
-      .topLeft{display:contents}
-      .logo{grid-area:brand}
-      .churchWrap{grid-area:church}
-      .topActions{grid-area:actions}
+      .top{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:none;column-gap:7px;row-gap:12px}
+      .topLeft,.topActions{display:contents}
+      .logo{grid-area:auto;grid-column:1;grid-row:1}
+      #fullBtn{grid-column:2;grid-row:1}
+      #settingsBtn{grid-column:3;grid-row:1}
+      .churchWrap{grid-area:auto;grid-column:1/-1;grid-row:2}
+      #homeBtn{grid-column:1;grid-row:2;justify-self:start;align-self:center;position:relative;z-index:1}
       .church{padding:5px 12px;border-radius:14px}
       .churchMark{height:48px;width:50px}
       .topActions{gap:7px}
@@ -283,6 +287,8 @@
     #ctlBody{display:flex;flex-direction:column;gap:14px}
     #ctlBody[hidden]{display:none}
     .ctlTop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .ctlTopRight{display:flex;align-items:center;gap:8px}
+    .ctlHome{width:42px;height:42px;font-size:17px;border-radius:13px}
     .ctlBrand{font-family:var(--display);color:#fff;font-size:19px;text-shadow:2px 2px 0 var(--ink);transform:rotate(-2deg)}
     .ctlBrand b{font-weight:400;font-size:30px;color:var(--sun);-webkit-text-stroke:1.5px var(--ink);paint-order:stroke fill;text-shadow:3px 3px 0 var(--ink);margin-left:3px}
     .ctlEmpty h2{font-family:var(--display);font-weight:400;font-size:26px;margin:0 0 8px}
@@ -318,6 +324,7 @@
         <div class="churchWrap"><div class="church" id="church" role="img" aria-label="VidaReal.tv Villa Nueva"><span class="churchMark"></span></div></div>
       </div>
       <div class="topActions">
+        <a class="iconBtn homeBtn" id="homeBtn" href="../" aria-label="Ir a la página principal de Bertil Raxon">BR</a>
         <button class="iconBtn" id="fullBtn" aria-label="Pantalla completa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
         <button class="btn btnWhite holdBtn settingsBtn" id="settingsBtn" aria-label="Ajustes del encargado. Mantener presionado."><span class="holdFill"></span><span class="holdInner"><span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Ajustes</span><small>mantener</small></span></button>
       </div>
@@ -349,7 +356,7 @@
         <div class="teamList" id="scores"></div>
       </section>
     </div>
-    <div class="foot"><span class="linkChip" id="linkChip">Esperando el control</span><p class="saveStatus" id="saveStatus">Los resultados se guardan en este dispositivo</p><a class="helpLink" href="../">Bertil Raxon</a><button class="helpLink" id="helpBtn">Cómo se juega</button><button class="btn btnSmall btnWhite" id="installBtn" hidden>Instalar app</button></div>
+    <div class="foot"><span class="linkChip" id="linkChip">Esperando el control</span><p class="saveStatus" id="saveStatus">Los resultados se guardan en este dispositivo</p><button class="helpLink" id="helpBtn">Cómo se juega</button><button class="btn btnSmall btnWhite" id="installBtn" hidden>Instalar app</button></div>
   </main>
 
   <div class="overlay" id="challengeOverlay" role="dialog" aria-modal="true" aria-labelledby="challengeTitle">
@@ -452,7 +459,7 @@
     <div class="dialog confirmBox"><h2 id="confirmTitle">¿Seguro?</h2><p id="confirmText"></p><div class="confirmActions"><button class="btn btnWhite" id="confirmNo">Cancelar</button><button class="btn btnDanger" id="confirmYes">Sí, borrar</button></div></div>
   </div>
   <main class="ctl" id="ctlApp" aria-label="Control del encargado">
-    <header class="ctlTop"><div class="ctlBrand">Casino del <b>CAOS</b></div><span class="linkChip ctlLink" id="ctlLink">Conectando…</span></header>
+    <header class="ctlTop"><div class="ctlBrand">Casino del <b>CAOS</b></div><div class="ctlTopRight"><span class="linkChip ctlLink" id="ctlLink">Conectando…</span><a class="iconBtn homeBtn ctlHome" href="../" aria-label="Ir a la página principal de Bertil Raxon">BR</a></div></header>
     <section class="panel ctlEmpty" id="ctlEmpty"><h2>Conectando con la pantalla…</h2><p>Abrí este mismo link en el iPad, mantené presionado <b>Ajustes</b> y elegí <b>Pantalla del juego</b>.</p></section>
     <div id="ctlBody" hidden>
       <div class="ctlTeams" id="ctlTeams"></div>
