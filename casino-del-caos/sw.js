@@ -1,6 +1,6 @@
 /* Casino del Caos: guarda la app en el dispositivo para que abra sin internet.
    Al publicar cambios, subí el número de VERSION para que todos reciban la nueva versión. */
-const VERSION = 'v5';
+const VERSION = 'v6';
 const CACHE = 'casino-del-caos-' + VERSION;
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './cloud.js',
