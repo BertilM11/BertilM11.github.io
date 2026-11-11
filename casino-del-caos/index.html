@@ -219,6 +219,7 @@
     .confirmActions .btn{min-width:150px}
     #settingsOverlay{z-index:25}
     #confirmOverlay{z-index:30}
+    #confirmNo[hidden],.modeBtn[hidden]{display:none}
 
     .toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;transform:translate(-50%,10px);background:var(--sun);border:var(--bw) solid var(--ink);box-shadow:4px 4px 0 var(--ink);border-radius:18px;padding:10px 20px;font-family:var(--display);font-size:21px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
     .toast.visible{opacity:1;transform:translate(-50%,0)}
@@ -236,7 +237,12 @@
     /* Teléfonos */
     @media (max-width:600px){
       .logoSmall{font-size:17px}
-      .church{padding:5px 9px;border-radius:14px}
+      .top{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand actions" "church church";row-gap:12px}
+      .topLeft{display:contents}
+      .logo{grid-area:brand}
+      .churchWrap{grid-area:church}
+      .topActions{grid-area:actions}
+      .church{padding:5px 12px;border-radius:14px}
       .churchMark{height:48px;width:50px}
       .topActions{gap:7px}
       .iconBtn{width:44px;height:44px}
@@ -569,7 +575,7 @@
   async function requestWake(){try{if(navigator.wakeLock&&!wakeLock){wakeLock=await navigator.wakeLock.request('screen');wakeLock.addEventListener('release',()=>{wakeLock=null;});}}catch(e){wakeLock=null;}}
   function releaseWake(){try{if(wakeLock)wakeLock.release();}catch(e){}wakeLock=null;}
   let confirmAction=null;
-  function askConfirm(title,text,yesLabel,action){$('#confirmTitle').textContent=title;$('#confirmText').textContent=text;$('#confirmYes').textContent=yesLabel;confirmAction=action;$('#confirmOverlay').classList.add('show');}
+  function askConfirm(title,text,yesLabel,action,single){$('#confirmTitle').textContent=title;$('#confirmText').textContent=text;$('#confirmYes').textContent=yesLabel;$('#confirmYes').className='btn '+(single?'btnSun':'btnDanger');$('#confirmNo').hidden=!!single;confirmAction=action;$('#confirmOverlay').classList.add('show');}
   function closeConfirm(){confirmAction=null;$('#confirmOverlay').classList.remove('show');}
   /* Botón que se activa solo si se mantiene presionado (para que lo use el encargado) */
   function makeHold(btn,action,hint){
@@ -705,7 +711,7 @@
 
   /* ---------- Ajustes ---------- */
   function fillSettings(){const g=state.cfg;for(let i=0;i<5;i++)$('#name'+i).value=teamName(i);g.cups.forEach((v,i)=>{$('#cup'+i).value=v;});$('#bonus').value=g.bonus;$('#jackpotCard').value=g.jackpotCard;g.final.forEach((v,i)=>{$('#final'+i).value=v;});$('#minutesSelect').value=String(state.minutes);}
-  function openSettings(){hideChallenge();fillSettings();document.querySelectorAll('.modeBtn').forEach(b=>{b.classList.toggle('sel',b.dataset.mode===mode);b.disabled=b.dataset.mode!=='solo'&&!room;});$('#modeNote').textContent=room?'Pantalla y Control se usan juntos: abrí este mismo link en los dos dispositivos, con tu cuenta y con internet.':'Pantalla y Control necesitan el link de Claude abierto con internet en los dos dispositivos.';$('#settingsOverlay').classList.add('show');}
+  function openSettings(){hideChallenge();fillSettings();document.querySelectorAll('.modeBtn').forEach(b=>{b.classList.toggle('sel',b.dataset.mode===mode);b.hidden=b.dataset.mode!=='solo'&&!room&&mode==='solo';b.disabled=b.dataset.mode!=='solo'&&!room;});$('#modeNote').textContent=room?'Pantalla y Control se usan juntos: abrí este mismo link en los dos dispositivos, con tu cuenta y con internet.':'En esta versión el iPad y el iPhone todavía no se pueden conectar entre sí. Por ahora eso funciona desde el link de Claude; en tu página se activa cuando conectemos Firebase.';$('#settingsOverlay').classList.add('show');}
   function closeSettings(){const a=document.activeElement;if(a&&a.blur&&$('#settingsOverlay').contains(a))a.blur();$('#settingsOverlay').classList.remove('show');}
   function recalcSpecials(){const c=[0,1,2].map(i=>Number($('#cup'+i).value)||0);$('#bonus').value=c[0]*2;$('#jackpotCard').value=c[2]*2;$('#final0').value=c[0]*2;$('#final1').value=c[1]*2;$('#final2').value=c[2]*3;}
   function readSettingsForm(){
@@ -906,12 +912,13 @@
   $('#confirmNo').addEventListener('click',closeConfirm);
   $('#confirmYes').addEventListener('click',()=>{const fn=confirmAction;closeConfirm();if(fn)fn();});
   $('#fullBtn').addEventListener('click',()=>{
-    const fsMsg='Pantalla completa no disponible aquí';
+    const noFs=()=>askConfirm('Pantalla completa','Safari en iPhone no permite pantalla completa en páginas web. Para verlo sin barras, tocá Compartir y luego «Agregar a pantalla de inicio», y abrilo desde ese ícono.','Entendido',null,true);
+    const blocked=()=>toast('Este navegador no dejó activar la pantalla completa');
     try{const d=document,el=d.documentElement;
       if(d.fullscreenElement||d.webkitFullscreenElement){const ex=d.exitFullscreen||d.webkitExitFullscreen;if(ex){const r=ex.call(d);if(r&&r.catch)r.catch(()=>{});}return;}
-      const req=el.requestFullscreen||el.webkitRequestFullscreen;if(!req){toast(fsMsg);return;}
-      const r=req.call(el);if(r&&r.catch)r.catch(()=>toast(fsMsg));
-    }catch(e){toast(fsMsg);}
+      const req=el.requestFullscreen||el.webkitRequestFullscreen;if(!req){noFs();return;}
+      const r=req.call(el);if(r&&r.catch)r.catch(blocked);
+    }catch(e){blocked();}
   });
   document.querySelectorAll('[data-cup]').forEach(b=>b.addEventListener('click',()=>recordHit(Number(b.dataset.cup))));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeConfirm();closeSettings();$('#helpOverlay').classList.remove('show');hideChallenge();}});
