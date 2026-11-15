@@ -119,7 +119,7 @@ function makeRoom() {
 
   function writeView(v) {
     lastViewAt = Date.now();
-    lastViewKey = JSON.stringify({ ...v, cur: { ...v.cur, tl: 0 } });
+    lastViewKey = JSON.stringify({ ...v, cur: { ...v.cur, tl: 0, xs: 0 } });
     setDoc(viewRef, { v: JSON.stringify(v), peer: PEER, t: lastViewAt }).catch(() => {});
   }
   function ensure(topic) {
@@ -146,7 +146,7 @@ function makeRoom() {
     emit(topic, data) {
       if (!connected()) return Promise.resolve();
       if (topic === "view") {
-        const key = JSON.stringify({ ...data, cur: { ...data.cur, tl: 0 } });
+        const key = JSON.stringify({ ...data, cur: { ...data.cur, tl: 0, xs: 0 } });
         const now = Date.now();
         if (key === lastViewKey && now - lastViewAt < 5000) {
           pendingView = data;

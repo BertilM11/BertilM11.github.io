@@ -312,6 +312,46 @@
     .ctlRandom{width:100%;margin-top:12px}
     .ctlRandom[hidden]{display:none}
     .ctlSettings{width:100%}
+
+    /* Tiempo extra */
+    .btnExtra{background:var(--ball);color:#fff;font-family:var(--display);font-weight:400;font-size:19px;text-shadow:1.5px 1.5px 0 var(--ink)}
+    .timer i.plus{width:.5em}
+    .timerBox.extra .timer{color:var(--ball);-webkit-text-stroke:1.5px var(--ink);paint-order:stroke fill}
+    .timerBox.extra .statLabel{color:var(--ball)}
+    .timeBar.extra span{background-color:var(--ball);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.35) 0 10px,transparent 10px 20px);background-size:28px 28px;animation:extraBar 1s linear infinite;border-right:0}
+    @keyframes extraBar{to{background-position:28px 0}}
+    .scoreBtns{display:flex;gap:8px}
+    .scoreHead .btnFinish,.btnFinish{background:var(--sun);font-family:var(--display);font-weight:400}
+    .btnFinish[hidden]{display:none}
+    body.mode-pantalla #finishBtn{display:none}
+    /* Ganador */
+    #winOverlay{z-index:30}
+    #confirmOverlay{z-index:40}
+    .win{--team:var(--grape);width:min(100%,600px);padding:0 0 20px;text-align:center}
+    .winTop{background-color:var(--team);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.22) 0 14px,transparent 14px 28px);border-bottom:var(--bw) solid var(--ink);padding:16px 16px 66px}
+    .winTag{display:inline-block;background:var(--sun);border:var(--bw) solid var(--ink);border-radius:30px;padding:6px 20px;font-family:var(--display);font-size:26px;box-shadow:3px 3px 0 var(--ink);transform:rotate(-3deg)}
+    .winLogo{width:128px;height:128px;margin:-64px auto 6px;border-radius:28px;border:var(--bw) solid var(--ink);box-shadow:5px 5px 0 var(--ink);background:var(--team);object-fit:cover;display:block;position:relative}
+    .winLogos{display:flex;justify-content:center;gap:10px;margin:-56px auto 6px;position:relative}
+    .winLogos[hidden],.winLogo[hidden]{display:none}
+    .winLogos img{width:100px;height:100px;border-radius:24px;border:var(--bw) solid var(--ink);box-shadow:4px 4px 0 var(--ink);background:var(--team);object-fit:cover}
+    .win h2{font-family:var(--display);font-weight:400;font-size:clamp(34px,5.5vw,50px);line-height:1;margin:8px 20px 4px;text-wrap:balance}
+    .winPts{font-family:var(--display);font-size:clamp(64px,10vw,96px);line-height:.9;color:var(--sun);-webkit-text-stroke:2.5px var(--ink);paint-order:stroke fill;text-shadow:4px 4px 0 var(--ink);font-variant-numeric:tabular-nums}
+    .winPtsLbl{font-weight:900;font-size:15px;color:var(--muted);margin:2px 0 16px}
+    .winRank{list-style:none;margin:0 auto;padding:0 22px;display:grid;gap:7px;max-width:460px}
+    .win.tie h2{font-size:clamp(28px,4vw,38px)}
+    .win.tie .winTop{padding-bottom:58px}
+    .win.tie .winPts{font-size:clamp(56px,8vw,78px)}
+    .winRow{--team:var(--grape);display:grid;grid-template-columns:30px 36px minmax(0,1fr) auto;align-items:center;gap:10px;padding:3px 14px 3px 8px;border:var(--bw) solid var(--ink);border-radius:15px;background:#fff;box-shadow:3px 3px 0 var(--ink);text-align:left}
+    .winRow.first{background:var(--team);color:#fff}
+    .winRow .pos{font-family:var(--display);font-size:22px;text-align:center}
+    .winRow img{width:36px;height:36px;border-radius:10px;border:2px solid var(--ink);background:var(--team);object-fit:cover;display:block}
+    .winRow b{font-weight:900;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .winRow .ts{font-family:var(--display);font-size:26px;font-variant-numeric:tabular-nums}
+    .winRow.first .ts,.winRow.first .pos{text-shadow:2px 2px 0 var(--ink)}
+    .winActions{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:18px 22px 0}
+    body.mode-pantalla .winActions{display:none}
+    .ctlFinish{width:100%}
+    .ctlFinish.ready{background:var(--sun);font-family:var(--display);font-weight:400;font-size:21px;animation:pulse 1.2s ease-in-out infinite}
     @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
   </style>
 </head>
@@ -344,14 +384,14 @@
         <div class="teamHead"><img class="teamLogo" id="teamLogo" alt="" width="66" height="66"><h2 id="teamName">Team Koalas</h2></div>
         <div class="stats">
           <div><span class="statLabel">Puntos</span><div class="scoreBig" id="topScore">0</div></div>
-          <div class="timerBox" id="timerBox"><span class="statLabel">Tiempo</span><div class="timer" id="timerValue" role="timer" aria-label="Tiempo restante"></div></div>
+          <div class="timerBox" id="timerBox"><span class="statLabel" id="timerLabel">Tiempo</span><div class="timer" id="timerValue" role="timer" aria-label="Tiempo restante"></div></div>
         </div>
         <div class="timeBar" id="progressBar"><span id="progressFill" style="width:100%"></span></div>
         <div class="timerControls"><p class="throws"><b id="progressText">0 tiros</b><span id="lastText"></span></p><button class="btn btnSmall btnMint" id="timerBtn">Iniciar</button></div>
       </section>
 
       <section class="panel scorePanel" aria-label="Marcador">
-        <div class="scoreHead"><h3>Marcador</h3><button class="btn btnSmall btnWhite" id="nextBtn">Siguiente equipo</button></div>
+        <div class="scoreHead"><h3>Marcador</h3><div class="scoreBtns"><button class="btn btnSmall btnFinish" id="finishBtn" hidden>Terminar torneo</button><button class="btn btnSmall btnWhite" id="nextBtn">Siguiente equipo</button></div></div>
         <div class="teamList" id="scores"></div>
       </section>
     </div>
@@ -384,7 +424,9 @@
         <li>El participante toca <strong>cualquier carta</strong> y le sale un reto al azar. El tiempo arranca con la primera carta.</li>
         <li>Después del tiro, tocá <strong>Falló</strong> o el vaso donde cayó. Los puntos se suman solos y la carta se vuelve a tapar.</li>
         <li>Pueden tocar <strong>la misma u otra carta</strong> las veces que alcance el tiempo. «Robo de suerte» pide dos tiros.</li>
+        <li>Si se acaba el tiempo, podés tocar <strong>Tiempo extra</strong>: el reloj cuenta hacia arriba hasta que toqués «Terminar extra».</li>
         <li>El <strong>Jackpot final</strong> lo activás vos cuando querás: mantené presionado el botón un momento.</li>
+        <li>Cuando todos jueguen, tocá <strong>Terminar torneo</strong> para ver al ganador.</li>
         <li>En <strong>Ajustes</strong> (también se mantiene presionado) cambiás nombres, puntos de los vasos y minutos.</li>
       </ol>
       <p>Usá el iPad en horizontal. Los puntos se guardan después de cada tiro.</p>
@@ -444,6 +486,7 @@
       </section>
       <p class="fieldNote" style="margin-top:14px">Los cambios de puntos aplican a los tiros nuevos. Lo que ya se registró no cambia.</p>
       <div class="settingsActions"><button class="btn btnWhite" id="settingsCancel" type="button">Cancelar</button><button class="btn btnSun" id="settingsSave" type="button">Guardar</button></div>
+      <section class="setSec"><h3>Final del torneo</h3><p class="fieldNote">Cuando todos los equipos hayan jugado, mostrá la pantalla con el ganador.</p><button class="btn btnSmall btnFinish" id="finishSetBtn" type="button">Terminar torneo y ver ganador</button></section>
       <section class="setSec dangerZone"><h3>Reinicios</h3>
         <div class="dangerBtns">
           <button class="btn btnSmall btnWhite" id="timerResetBtn" type="button">Reiniciar tiempo del equipo actual</button>
@@ -451,6 +494,19 @@
           <button class="btn btnSmall btnDanger" id="resetAllBtn" type="button">Borrar todo el torneo</button>
         </div>
       </section>
+    </div>
+  </div>
+
+  <div class="overlay" id="winOverlay" role="dialog" aria-modal="true" aria-labelledby="winName">
+    <div class="dialog win" id="winCard">
+      <div class="winTop"><span class="winTag" id="winTag">¡Ganador!</span></div>
+      <img class="winLogo" id="winLogo" alt="">
+      <div class="winLogos" id="winLogos" hidden></div>
+      <h2 id="winName">Team</h2>
+      <div class="winPts" id="winPts">0</div>
+      <p class="winPtsLbl">puntos</p>
+      <ol class="winRank" id="winRank" aria-label="Posiciones finales"></ol>
+      <div class="winActions"><button class="btn btnWhite" id="winBack" type="button">Volver al juego</button><button class="btn btnDanger" id="winNew" type="button">Nuevo torneo</button></div>
     </div>
   </div>
 
@@ -466,7 +522,7 @@
         <div class="teamHead"><img class="teamLogo" id="ctlLogo" alt="" width="66" height="66"><h2 id="ctlName">Team</h2></div>
         <div class="stats">
           <div><span class="statLabel">Puntos</span><div class="scoreBig" id="ctlScore">0</div></div>
-          <div class="timerBox" id="ctlTimerBox"><span class="statLabel">Tiempo</span><div class="timer" id="ctlTimer"></div></div>
+          <div class="timerBox" id="ctlTimerBox"><span class="statLabel" id="ctlTimerLabel">Tiempo</span><div class="timer" id="ctlTimer"></div></div>
         </div>
         <p class="throws ctlThrowsLine"><b id="ctlThrows">0 tiros</b><span id="ctlLast"></span></p>
         <div class="ctlRow"><button class="btn btnMint" id="ctlTimerBtn">Iniciar</button><button class="btn btnWhite" id="ctlNext">Siguiente equipo</button></div>
@@ -485,6 +541,7 @@
         <button class="btn btnSun ctlRandom" id="ctlRandom">Abrir carta al azar</button>
       </section>
       <div class="ctlRow"><button class="btn btnWhite" id="ctlUndo">Deshacer</button><button class="btn btnJackpot" id="ctlFinal">Jackpot final</button></div>
+      <button class="btn btnWhite ctlFinish" id="ctlFinish">Terminar torneo y ver ganador</button>
       <button class="btn btnWhite ctlSettings" id="ctlSettings">Ajustes</button>
     </div>
   </main>
@@ -521,10 +578,10 @@
   function clampNum(x,def,min){if(x===''||x===null||x===undefined)return def;const n=Math.round(Number(x));return Number.isFinite(n)?Math.max(min,Math.min(9999,n)):def;}
   function normCfg(c){c=c||{};const cups=Array.isArray(c.cups)?c.cups:[];const fin=Array.isArray(c.final)?c.final:[];return{cups:[0,1,2].map(i=>clampNum(cups[i],DEFAULT_CFG.cups[i],1)),bonus:clampNum(c.bonus,DEFAULT_CFG.bonus,0),jackpotCard:clampNum(c.jackpotCard,DEFAULT_CFG.jackpotCard,0),final:[0,1,2].map(i=>clampNum(fin[i],DEFAULT_CFG.final[i],0))};}
   function normNames(n){return [0,1,2,3,4].map(i=>{const s=(n&&typeof n[i]==='string')?n[i].trim().slice(0,24):'';return s||DEFAULT_NAMES[i];});}
-  function newTeam(secs){return{active:null,score:0,log:[],firstRobo:null,ended:false,finalActive:false,finalDone:false,finalScore:0,timeLeft:secs,timerRunning:false,history:[]};}
+  function newTeam(secs){return{active:null,score:0,log:[],firstRobo:null,ended:false,finalActive:false,finalDone:false,finalScore:0,timeLeft:secs,timerRunning:false,extra:false,extraSecs:0,history:[]};}
   function newState(minutes,names,cfg){const m=minutes||5;return{v:2,minutes:m,names:normNames(names),cfg:normCfg(cfg),selected:0,updatedAt:0,teams:Array.from({length:5},()=>newTeam(m*60))};}
   function valid(o){return !!o&&o.v===2&&Array.isArray(o.teams)&&o.teams.length===5&&!o.teams.some(t=>!t||typeof t.score!=='number'||!Array.isArray(t.log)||typeof t.timeLeft!=='number');}
-  function normalize(o){o.minutes=Math.max(1,Math.min(10,Number(o.minutes)||5));o.selected=Math.max(0,Math.min(4,Number(o.selected)||0));o.updatedAt=Number(o.updatedAt)||0;o.names=normNames(o.names);o.cfg=normCfg(o.cfg);o.teams.forEach(t=>{t.timerRunning=false;if(!Array.isArray(t.history))t.history=[];if(t.active&&(typeof t.active.slot!=='number'||!cardById(t.active.id)))t.active=null;if(t.timeLeft<0)t.timeLeft=0;});return o;}
+  function normalize(o){o.minutes=Math.max(1,Math.min(10,Number(o.minutes)||5));o.selected=Math.max(0,Math.min(4,Number(o.selected)||0));o.updatedAt=Number(o.updatedAt)||0;o.names=normNames(o.names);o.cfg=normCfg(o.cfg);o.finished=!!o.finished;o.teams.forEach(t=>{t.timerRunning=false;t.extra=!!t.extra;t.extraSecs=Math.max(0,Number(t.extraSecs)||0);if(!Array.isArray(t.history))t.history=[];if(t.active&&(typeof t.active.slot!=='number'||!cardById(t.active.id)))t.active=null;if(t.timeLeft<0)t.timeLeft=0;});return o;}
   function load(){try{const o=JSON.parse(localStorage.getItem(KEY)||'null');return valid(o)?normalize(o):newState();}catch(e){return newState();}}
 
   let state=load();
@@ -535,7 +592,7 @@
   const current=()=>state.teams[state.selected];
   const teamName=i=>state.names[i];
   const totalSecs=()=>state.minutes*60;
-  const roundOver=t=>t.ended||t.timeLeft<=0;
+  const roundOver=t=>!t.extra&&(t.ended||t.timeLeft<=0);
   const canPlay=t=>!roundOver(t)&&!t.finalDone&&!t.finalActive;
   const plural=n=>n+(n===1?' tiro':' tiros');
   let hideToastTimer=null;
@@ -558,7 +615,7 @@
     default:return 'Un tiro desde más lejos. Vaso de '+g.cups[0]+': '+g.final[0]+' puntos. Vaso de '+g.cups[1]+': '+g.final[1]+'. Vaso de '+g.cups[2]+': '+g.final[2]+'.';}}
 
   /* ---------- Guardado: siempre en este dispositivo; también en la cuenta cuando se puede ---------- */
-  const sigOf=s=>JSON.stringify(s,(k,v)=>(k==='timeLeft'||k==='timerRunning'||k==='updatedAt'||k==='history'||k==='rev')?undefined:v);
+  const sigOf=s=>JSON.stringify(s,(k,v)=>(k==='timeLeft'||k==='extraSecs'||k==='timerRunning'||k==='updatedAt'||k==='history'||k==='rev')?undefined:v);
   let lastSig=null,remoteDoc=null,remoteReady=false,remoteBusy=false,remoteDirty=false,remoteTimer=null;
   function setStatus(text,ok){const el=$('#saveStatus');if(!el)return;el.textContent=text;el.classList.toggle('ok',!!ok);}
   function save(){if(mode==='control')return;const sig=sigOf(state);if(sig!==lastSig){if(lastSig!==null){state.updatedAt=Date.now();state.rev=(state.rev||0)+1;}lastSig=sig;scheduleRemote();}try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
@@ -594,7 +651,7 @@
   async function requestWake(){try{if(navigator.wakeLock&&!wakeLock){wakeLock=await navigator.wakeLock.request('screen');wakeLock.addEventListener('release',()=>{wakeLock=null;});}}catch(e){wakeLock=null;}}
   function releaseWake(){try{if(wakeLock)wakeLock.release();}catch(e){}wakeLock=null;}
   let confirmAction=null;
-  function askConfirm(title,text,yesLabel,action,single){$('#confirmTitle').textContent=title;$('#confirmText').textContent=text;$('#confirmYes').textContent=yesLabel;$('#confirmYes').className='btn '+(single?'btnSun':'btnDanger');$('#confirmNo').hidden=!!single;confirmAction=action;$('#confirmOverlay').classList.add('show');}
+  function askConfirm(title,text,yesLabel,action,single){$('#confirmTitle').textContent=title;$('#confirmText').textContent=text;$('#confirmYes').textContent=yesLabel;$('#confirmYes').className='btn '+(single?'btnSun':'btnDanger');$('#confirmNo').hidden=single===true;confirmAction=action;$('#confirmOverlay').classList.add('show');}
   function closeConfirm(){confirmAction=null;$('#confirmOverlay').classList.remove('show');}
   /* Botón que se activa solo si se mantiene presionado (para que lo use el encargado) */
   function makeHold(btn,action,hint){
@@ -609,24 +666,34 @@
   }
 
   /* ---------- Pantalla ---------- */
+  function timerHTML(n,extra){return (extra?'+':'')+formatTime(n);}
+  function digits(txt){return txt.split('').map(ch=>ch===':'?'<i class="colon">:</i>':ch==='+'?'<i class="plus">+</i>':'<i>'+ch+'</i>').join('');}
   function renderTimer(){
     queueView();
-    const t=current();const secs=totalSecs();const stopped=t.timeLeft<=0||t.finalDone||t.ended;
-    $('#timerValue').innerHTML=formatTime(t.timeLeft).split('').map(ch=>ch===':'?'<i class="colon">:</i>':'<i>'+ch+'</i>').join('');
-    const box=$('#timerBox');box.classList.toggle('expired',t.timeLeft<=0);box.classList.toggle('low',t.timerRunning&&t.timeLeft>0&&t.timeLeft<=30);
+    const t=current();const secs=totalSecs();const ex=!!t.extra;const stopped=!ex&&(t.timeLeft<=0||t.finalDone||t.ended);
+    $('#timerValue').innerHTML=digits(timerHTML(ex?t.extraSecs:t.timeLeft,ex));
+    $('#timerLabel').textContent=ex?'Tiempo extra':'Tiempo';
+    const box=$('#timerBox');box.classList.toggle('extra',ex);box.classList.toggle('expired',!ex&&t.timeLeft<=0);box.classList.toggle('low',!ex&&t.timerRunning&&t.timeLeft>0&&t.timeLeft<=30);
     const btn=$('#timerBtn');
-    btn.textContent=t.timerRunning?'Pausar':stopped?'Terminado':t.finalActive?'En pausa':(t.timeLeft<secs?'Seguir':'Iniciar');
-    btn.disabled=!t.timerRunning&&(stopped||t.finalActive);
-    btn.className='btn btnSmall '+(t.timerRunning?'btnWhite':'btnMint');
-    $('#progressFill').style.width=Math.max(0,Math.min(100,t.timeLeft/secs*100))+'%';
-    $('#progressBar').classList.toggle('low',t.timeLeft<=30);
+    const canExtra=stopped&&!t.finalDone&&!t.finalActive&&!t.active;
+    if(ex){btn.textContent=t.timerRunning?'Terminar extra':'Seguir extra';btn.disabled=!!t.finalActive;btn.className='btn btnSmall '+(t.timerRunning?'btnDanger':'btnMint');}
+    else if(canExtra){btn.textContent='Tiempo extra';btn.disabled=false;btn.className='btn btnSmall btnExtra';}
+    else{
+      btn.textContent=t.timerRunning?'Pausar':stopped?'Terminado':t.finalActive?'En pausa':(t.timeLeft<secs?'Seguir':'Iniciar');
+      btn.disabled=!t.timerRunning&&(stopped||t.finalActive);
+      btn.className='btn btnSmall '+(t.timerRunning?'btnWhite':'btnMint');
+    }
+    $('#progressFill').style.width=ex?'100%':Math.max(0,Math.min(100,t.timeLeft/secs*100))+'%';
+    $('#progressBar').classList.toggle('low',!ex&&t.timeLeft<=30);
+    $('#progressBar').classList.toggle('extra',ex);
   }
   function renderCue(t){
     let cue,sub='';const name=teamName(state.selected);
     if(t.finalDone){cue=name+' terminó';sub='Hicieron '+t.score+' puntos. Pasá al siguiente equipo.';}
     else if(t.finalActive){cue='¡Jackpot final!';sub='Un último tiro desde más lejos.';}
-    else if(t.active){cue=t.timeLeft<=0?'¡Tiempo! Registrá el último tiro':'¡A lanzar!';}
-    else if(roundOver(t)){cue='¡Se acabó el tiempo!';sub=mode==='pantalla'?'Esperen al encargado para el Jackpot final.':'Encargado: mantené presionado «Jackpot final» para el último tiro.';}
+    else if(t.active){cue=(t.timeLeft<=0&&!t.extra)?'¡Tiempo! Registrá el último tiro':'¡A lanzar!';}
+    else if(t.extra){cue='¡Tiempo extra!';sub='Sigan tirando hasta que el encargado diga alto.';}
+    else if(roundOver(t)){cue='¡Se acabó el tiempo!';sub=mode==='pantalla'?'Esperen al encargado.':'Encargado: «Tiempo extra» para seguir, o mantené presionado «Jackpot final».';}
     else if(!t.log.length&&t.timeLeft===totalSecs()){cue='¡Elegí una carta!';sub='El tiempo arranca con la primera carta.';}
     else cue='¡Elegí una carta!';
     $('#cue').textContent=cue;$('#subcue').textContent=sub;
@@ -664,6 +731,9 @@
     else if(over){rand.textContent='Tiempo terminado';rand.disabled=true;}
     else{rand.textContent='Sacar carta al azar';rand.disabled=false;}
 
+    const doneAll=allTeamsDone(state.teams);
+    $('#finishBtn').hidden=!doneAll||state.finished;
+    renderWinner(state.names,state.teams.map(x=>x.score),!!state.finished);
     const scores=$('#scores');scores.innerHTML='';
     const played=state.teams.some(x=>x.log.length||x.finalDone);
     const max=Math.max(...state.teams.map(x=>x.score));
@@ -679,7 +749,7 @@
   }
 
   /* ---------- Juego ---------- */
-  function startTimer(t){if(t.timeLeft<=0||t.finalDone||t.ended||t.finalActive)return;t.timerRunning=true;acc=0;lastTick=Date.now();requestWake();}
+  function startTimer(t){if((t.timeLeft<=0&&!t.extra)||t.finalDone||t.ended||t.finalActive)return;t.timerRunning=true;acc=0;lastTick=Date.now();requestWake();}
   function switchTeam(i){const old=current();old.timerRunning=false;releaseWake();state.selected=i;hideChallenge();closeConfirm();render();}
   function selectCard(slot){
     const t=current();
@@ -709,7 +779,7 @@
     const t=current();if(t.finalDone)return;
     if(t.active){toast('Primero registrá el tiro abierto');showChallenge(false);return;}
     const fresh=!t.finalActive;
-    if(fresh){snapshot(t);t.finalActive=true;t.timerRunning=false;releaseWake();}
+    if(fresh){snapshot(t);t.finalActive=true;t.timerRunning=false;if(t.extra){t.extra=false;t.ended=true;}releaseWake();}
     render();showChallenge(fresh);
   }
   function recordHit(cup){
@@ -725,8 +795,40 @@
     toast(pts?'¡+'+pts+'! '+c.name:'Sin puntos esta vez');
     if(cup===3&&(c.kind==='double'||c.kind==='jackpot'))confetti();
   }
-  function undo(){const t=current();if(!t.history.length)return;const old=t.history.pop();['active','score','log','firstRobo','ended','finalActive','finalDone','finalScore'].forEach(k=>{t[k]=old[k];});hideChallenge();render();if(mode==='pantalla'&&(t.active||t.finalActive))showChallenge(false);toast('Listo, se deshizo');}
+  function undo(){const t=current();if(!t.history.length)return;const old=t.history.pop();['active','score','log','firstRobo','ended','extra','finalActive','finalDone','finalScore'].forEach(k=>{t[k]=old[k];});hideChallenge();render();if(mode==='pantalla'&&(t.active||t.finalActive))showChallenge(false);toast('Listo, se deshizo');}
   function nextTeam(){switchTeam((state.selected+1)%5);}
+  /* ---------- Tiempo extra ---------- */
+  function canStartExtra(t){return !t.extra&&roundOver(t)&&!t.finalDone&&!t.finalActive&&!t.active;}
+  function startExtra(){const t=current();if(!canStartExtra(t))return;t.extra=true;t.ended=false;startTimer(t);render();toast('¡Tiempo extra!');}
+  function stopExtra(){const t=current();if(!t.extra)return;t.extra=false;t.ended=true;t.timerRunning=false;acc=0;releaseWake();render();toast('Se terminó el tiempo extra');}
+  function timerButton(){
+    const t=current();
+    if(t.extra){if(t.timerRunning)stopExtra();else{startTimer(t);renderTimer();save();}return;}
+    if(canStartExtra(t)){askConfirm('¿Dar tiempo extra?',teamName(state.selected)+' sigue tirando. El reloj cuenta hacia arriba hasta que toqués «Terminar extra».','Sí, dar tiempo extra',startExtra,'sun');return;}
+    if(t.timerRunning){t.timerRunning=false;releaseWake();}else startTimer(t);renderTimer();save();
+  }
+  /* ---------- Final del torneo ---------- */
+  function allTeamsDone(teams){return teams.every(x=>x.finalDone||(!x.extra&&(x.ended||x.timeLeft<=0)));}
+  function finishTournament(){state.teams.forEach(t=>{t.timerRunning=false;if(t.extra){t.extra=false;t.ended=true;}});releaseWake();hideChallenge();closeSettings();state.finished=true;render();confetti();setTimeout(confetti,700);}
+  function reopenTournament(){state.finished=false;render();toast('De vuelta al juego');}
+  function askFinish(){askConfirm('¿Terminar el torneo?','Se muestra la pantalla del equipo ganador con los puntos de todos. Podés volver al juego si hace falta.','Sí, ver ganador',()=>{if(mode==='control')ctlAction('finish',{on:true});else finishTournament();},'sun');}
+  function renderWinner(names,scores,show){
+    const ov=$('#winOverlay');
+    if(!show){ov.classList.remove('show');return;}
+    const order=[0,1,2,3,4].sort((a,b)=>scores[b]-scores[a]||a-b);
+    const top=scores[order[0]];const winners=order.filter(i=>scores[i]===top);
+    const w=winners[0];const tie=winners.length>1;
+    $('#winCard').style.setProperty('--team',TEAM_COLORS[w]);
+    $('#winTag').textContent=tie?'¡Empate!':'¡Ganador!';
+    const logo=$('#winLogo');if(logo.getAttribute('src')!==LOGOS[w])logo.src=LOGOS[w];
+    $('#winLogos').innerHTML=tie?winners.map(i=>'<img alt="" src="'+LOGOS[i]+'" style="--team:'+TEAM_COLORS[i]+'">').join(''):'';
+    $('#winLogos').hidden=!tie;logo.hidden=tie;
+    const ns=winners.map(i=>names[i]);$('#winName').textContent=ns.length>1?ns.slice(0,-1).join(', ')+' y '+ns[ns.length-1]:ns[0];$('#winCard').classList.toggle('tie',tie);
+    $('#winPts').textContent=top;
+    $('#winRank').innerHTML=order.map(i=>{const pos=1+scores.filter(x=>x>scores[i]).length;return '<li class="winRow'+(pos===1?' first':'')+'" style="--team:'+TEAM_COLORS[i]+'"><span class="pos">'+pos+'</span><img alt="" src="'+LOGOS[i]+'"><b>'+esc(names[i])+'</b><span class="ts">'+scores[i]+'</span></li>';}).join('');
+    const wasOpen=ov.classList.contains('show');ov.classList.add('show');
+    if(!wasOpen&&mode!=='solo'){confetti();setTimeout(confetti,700);}
+  }
 
   /* ---------- Ajustes ---------- */
   function fillSettings(){const g=state.cfg;for(let i=0;i<5;i++)$('#name'+i).value=teamName(i);g.cups.forEach((v,i)=>{$('#cup'+i).value=v;});$('#bonus').value=g.bonus;$('#jackpotCard').value=g.jackpotCard;g.final.forEach((v,i)=>{$('#final'+i).value=v;});$('#minutesSelect').value=String(state.minutes);}
@@ -746,7 +848,7 @@
     render();toast('Ajustes guardados');
   }
   function saveSettings(){const set=readSettingsForm();closeSettings();if(mode==='control'){if(ctlAction('settings',{s:set}))toast('Ajustes enviados a la pantalla');}else applySettings(set);}
-  function doResetTimer(){const t=current();if(t.finalDone)return;t.timeLeft=totalSecs();t.timerRunning=false;t.ended=false;acc=0;releaseWake();render();toast('Tiempo reiniciado');}
+  function doResetTimer(){const t=current();if(t.finalDone)return;t.timeLeft=totalSecs();t.timerRunning=false;t.ended=false;t.extra=false;t.extraSecs=0;acc=0;releaseWake();render();toast('Tiempo reiniciado');}
   function doResetTeam(n){state.teams[n]=newTeam(totalSecs());releaseWake();hideChallenge();render();toast('Equipo reiniciado');}
   function doResetAll(){const r=(state.rev||0)+1;state=newState(state.minutes,state.names,state.cfg);state.rev=r;releaseWake();hideChallenge();render();toast('Torneo nuevo');}
   function resetTimerCurrent(){
@@ -765,9 +867,9 @@
   let lastView=null,viewAt=0,viewLive=false,busyUntil=0,ctlUnsub=null;
   function viewOf(st){
     const t=st.teams[st.selected];const last=t.log[t.log.length-1]||null;
-    return{rev:st.rev||0,sel:st.selected,minutes:st.minutes,names:st.names,cfg:st.cfg,
+    return{rev:st.rev||0,sel:st.selected,minutes:st.minutes,names:st.names,cfg:st.cfg,fin:st.finished?1:0,done:allTeamsDone(st.teams)?1:0,
       teams:st.teams.map(x=>[x.score,x.log.length,x.finalDone?1:0]),
-      cur:{id:t.active?t.active.id:null,fr:t.firstRobo,fa:t.finalActive?1:0,fd:t.finalDone?1:0,end:t.ended?1:0,tl:t.timeLeft,run:t.timerRunning?1:0,last:last?{id:last.id,pts:last.pts}:null,h:(t.history||[]).length,n:t.log.length}};
+      cur:{id:t.active?t.active.id:null,fr:t.firstRobo,fa:t.finalActive?1:0,fd:t.finalDone?1:0,end:t.ended?1:0,tl:t.timeLeft,ex:t.extra?1:0,xs:t.extraSecs||0,run:t.timerRunning?1:0,last:last?{id:last.id,pts:last.pts}:null,h:(t.history||[]).length,n:t.log.length}};
   }
   function sendView(){if(mode!=='pantalla'||!room)return;try{room.emit('view',viewOf(state)).catch(()=>{});}catch(e){}}
   function queueView(){if(mode!=='pantalla'||!room||viewTimer)return;viewTimer=setTimeout(()=>{viewTimer=null;sendView();},90);}
@@ -780,6 +882,8 @@
       case 'next':if(fresh)nextTeam();break;
       case 'timer':if(d.run)startTimer(t);else{t.timerRunning=false;releaseWake();}renderTimer();save();break;
       case 'timerReset':doResetTimer();break;
+      case 'extra':if(d.on)startExtra();else stopExtra();break;
+      case 'finish':if(d.on)finishTournament();else reopenTournament();break;
       case 'random':if(fresh)randomCard();break;
       case 'hit':if(fresh)recordHit(d.cup);break;
       case 'final':if(fresh)activateFinal();break;
@@ -803,7 +907,7 @@
   function onView(v,live){
     if(mode!=='control'||!v||typeof v!=='object'||!Array.isArray(v.teams)||v.teams.length!==5||!v.cur)return;
     if(!live&&viewLive&&Date.now()-viewAt<15000)return;
-    const keyOf=x=>x?JSON.stringify(Object.assign({},x,{cur:Object.assign({},x.cur,{tl:0})})):'';
+    const keyOf=x=>x?JSON.stringify(Object.assign({},x,{cur:Object.assign({},x.cur,{tl:0,xs:0})})):'';
     const changed=keyOf(v)!==keyOf(lastView);
     lastView=v;viewAt=Date.now();if(live)viewLive=true;
     if(changed)busyUntil=0;
@@ -840,9 +944,11 @@
     updateLink();
   }
   function renderCtlTimer(){
-    if(!lastView)return;const c=lastView.cur;let tl=c.tl;if(c.run)tl=Math.max(0,tl-Math.floor((Date.now()-viewAt)/1000));
-    $('#ctlTimer').innerHTML=formatTime(tl).split('').map(ch=>ch===':'?'<i class="colon">:</i>':'<i>'+ch+'</i>').join('');
-    const box=$('#ctlTimerBox');box.classList.toggle('expired',tl<=0);box.classList.toggle('low',!!c.run&&tl>0&&tl<=30);
+    if(!lastView)return;const c=lastView.cur;const ex=!!c.ex;const el=c.run?Math.floor((Date.now()-viewAt)/1000):0;
+    const n=ex?(Number(c.xs)||0)+el:Math.max(0,c.tl-el);
+    $('#ctlTimer').innerHTML=digits(timerHTML(n,ex));
+    $('#ctlTimerLabel').textContent=ex?'Tiempo extra':'Tiempo';
+    const box=$('#ctlTimerBox');box.classList.toggle('extra',ex);box.classList.toggle('expired',!ex&&n<=0);box.classList.toggle('low',!ex&&!!c.run&&n>0&&n<=30);
   }
   function renderControl(){
     if(mode!=='control')return;
@@ -850,7 +956,7 @@
     const v=lastView;
     $('#ctlEmpty').hidden=!!v;$('#ctlBody').hidden=!v;
     if(!v)return;
-    const i0=v.sel;const c=v.cur;const busy=Date.now()<busyUntil;const over=!!c.end||c.tl<=0;
+    const i0=v.sel;const c=v.cur;const busy=Date.now()<busyUntil;const over=!c.ex&&(!!c.end||c.tl<=0);
     const chips=$('#ctlTeams');chips.innerHTML='';
     v.teams.forEach((tm,i)=>{const b=document.createElement('button');b.type='button';b.className='ctlChip'+(i===i0?' sel':'');b.style.setProperty('--team',TEAM_COLORS[i]);b.setAttribute('aria-label',teamName(i)+', '+tm[0]+' puntos');b.innerHTML='<img alt="" src="'+LOGOS[i]+'"><b>'+Number(tm[0])+'</b>';b.addEventListener('click',()=>{if(lastView&&i!==lastView.sel)ctlAction('team',{i});});chips.appendChild(b);});
     $('#ctlTeamCard').style.setProperty('--team',TEAM_COLORS[i0]);
@@ -858,8 +964,11 @@
     $('#ctlName').textContent=teamName(i0);
     $('#ctlScore').textContent=Number(v.teams[i0][0]);
     renderCtlTimer();
-    const tb=$('#ctlTimerBtn');tb.textContent=c.run?'Pausar':(over||c.fd)?'Terminado':c.fa?'En pausa':(c.tl<v.minutes*60?'Seguir':'Iniciar');
-    tb.disabled=busy||(!c.run&&(over||!!c.fd||!!c.fa));tb.className='btn '+(c.run?'btnWhite':'btnMint');
+    const tb=$('#ctlTimerBtn');const ex=!!c.ex;const canEx=!ex&&over&&!c.fd&&!c.fa&&!c.id;
+    if(ex){tb.textContent=c.run?'Terminar extra':'Seguir extra';tb.disabled=busy||!!c.fa;tb.className='btn '+(c.run?'btnDanger':'btnMint');}
+    else if(canEx){tb.textContent='Tiempo extra';tb.disabled=busy;tb.className='btn btnExtra';}
+    else{tb.textContent=c.run?'Pausar':(over||c.fd)?'Terminado':c.fa?'En pausa':(c.tl<v.minutes*60?'Seguir':'Iniciar');
+      tb.disabled=busy||(!c.run&&(over||!!c.fd||!!c.fa));tb.className='btn '+(c.run?'btnWhite':'btnMint');}
     const card=c.fa?FINAL:(c.id?cardById(c.id):null);
     $('#ctlNow').className='panel ctlNow'+(card?' '+TYPE_CLASS[card.kind]:'');
     if(card){
@@ -867,8 +976,8 @@
       const two=card.kind==='two';$('#ctlStep').hidden=!two;$('#ctlStep').textContent=two?((c.fr!==null&&c.fr!==undefined)?'Segundo tiro (el primero valió '+c.fr+')':'Primer tiro de dos'):'';
     }else{
       $('#ctlType').hidden=true;$('#ctlStep').hidden=true;
-      $('#ctlTitle').textContent=c.fd?'Equipo terminado':over?'Se acabó el tiempo':'Esperando carta';
-      $('#ctlDesc').textContent=c.fd?'Pasá al siguiente equipo.':over?'Activá el Jackpot final o pasá al siguiente equipo.':'Los chavos eligen una carta en el iPad, o abrí una al azar.';
+      $('#ctlTitle').textContent=c.fd?'Equipo terminado':over?'Se acabó el tiempo':c.ex?'Tiempo extra':'Esperando carta';
+      $('#ctlDesc').textContent=c.fd?'Pasá al siguiente equipo.':over?'Dales tiempo extra, activá el Jackpot final o pasá al siguiente equipo.':c.ex?'Siguen tirando. Tocá «Terminar extra» cuando querás parar.':'Los chavos eligen una carta en el iPad, o abrí una al azar.';
     }
     document.querySelectorAll('[data-ccup]').forEach(btn=>{const cup=Number(btn.dataset.ccup);const val=btn.querySelector('.cupVal');if(val)val.textContent=cupValue(cup);let txt='0 pts';if(cup){if(card){const two=card.kind==='two';const pts=two?cupValue(cup):pointsFor(card,cup);txt=(card.kind==='normal'||two)?pts+' pts':'+'+pts+' pts';}else txt=cupValue(cup)+' pts';}btn.querySelector('small').textContent=txt;btn.disabled=!card||busy;});
     const rnd=$('#ctlRandom');rnd.hidden=!!card||over||!!c.fd;rnd.disabled=busy;
@@ -877,6 +986,8 @@
     $('#ctlUndo').disabled=busy||!c.h;
     $('#ctlFinal').disabled=busy||!!c.fd||!!c.id||!!c.fa;
     $('#ctlNext').disabled=busy;
+    const fb=$('#ctlFinish');fb.disabled=busy;fb.classList.toggle('ready',!!v.done&&!v.fin);
+    renderWinner(state.names,v.teams.map(x=>Number(x[0])||0),!!v.fin);
   }
   function setMode(m){
     if(!MODES.includes(m))return;
@@ -890,7 +1001,7 @@
     if(room)room.presence({role:m}).catch(()=>{});
     if(m==='control'){
       state.teams.forEach(t=>{t.timerRunning=false;});releaseWake();
-      remoteReady=false;lastView=null;viewLive=false;busyUntil=0;
+      remoteReady=false;lastView=null;viewLive=false;busyUntil=0;$('#winOverlay').classList.remove('show');
       startControlSync();sendCmd('hello');renderControl();toast('Este dispositivo es el control');
     }else{
       stopControlSync();
@@ -904,6 +1015,7 @@
   setInterval(()=>{if(mode==='control'&&lastView)renderCtlTimer();},500);
   setInterval(()=>{
     const now=Date.now();const dt=now-lastTick;lastTick=now;if(mode==='control')return;const t=current();
+    if(t.extra){if(!t.timerRunning){acc=0;return;}acc+=Math.min(dt,2000);let ch=false;while(acc>=1000){t.extraSecs++;acc-=1000;ch=true;}if(ch){renderTimer();save();}return;}
     if(!t.timerRunning||t.timeLeft<=0){acc=0;return;}
     acc+=Math.min(dt,2000);let changed=false;
     while(acc>=1000&&t.timeLeft>0){t.timeLeft--;acc-=1000;changed=true;}
@@ -916,7 +1028,11 @@
   $('#randomBtn').addEventListener('click',randomCard);
   $('#undoBtn').addEventListener('click',undo);
   $('#nextBtn').addEventListener('click',nextTeam);
-  $('#timerBtn').addEventListener('click',()=>{const t=current();if(t.timerRunning){t.timerRunning=false;releaseWake();}else startTimer(t);renderTimer();save();});
+  $('#timerBtn').addEventListener('click',timerButton);
+  $('#finishBtn').addEventListener('click',askFinish);
+  $('#finishSetBtn').addEventListener('click',()=>{closeSettings();askFinish();});
+  $('#winBack').addEventListener('click',()=>{if(mode==='control')ctlAction('finish',{on:false});else reopenTournament();});
+  $('#winNew').addEventListener('click',resetAll);
   makeHold($('#jackpotBtn'),activateFinal,'Mantené presionado para el Jackpot final');
   makeHold($('#settingsBtn'),openSettings,'Mantené presionado para abrir Ajustes');
   ['cup0','cup1','cup2'].forEach(id=>$('#'+id).addEventListener('input',recalcSpecials));
@@ -949,7 +1065,12 @@
   document.querySelectorAll('.modeBtn').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
   window.addEventListener('hashchange',()=>{const h=(location.hash||'').replace('#','');if(MODES.includes(h)&&h!==mode)setMode(h);});
   document.querySelectorAll('[data-ccup]').forEach(b=>b.addEventListener('click',()=>ctlAction('hit',{cup:Number(b.dataset.ccup)})));
-  $('#ctlTimerBtn').addEventListener('click',()=>{if(lastView)ctlAction('timer',{run:!lastView.cur.run});});
+  $('#ctlTimerBtn').addEventListener('click',()=>{if(!lastView)return;const c=lastView.cur;
+    if(c.ex){if(c.run)ctlAction('extra',{on:false});else ctlAction('timer',{run:true});return;}
+    const over=!!c.end||c.tl<=0;
+    if(over&&!c.fd&&!c.fa&&!c.id){askConfirm('¿Dar tiempo extra?',teamName(lastView.sel)+' sigue tirando. El reloj cuenta hacia arriba hasta que toqués «Terminar extra».','Sí, dar tiempo extra',()=>ctlAction('extra',{on:true}),'sun');return;}
+    ctlAction('timer',{run:!c.run});});
+  $('#ctlFinish').addEventListener('click',askFinish);
   $('#ctlNext').addEventListener('click',()=>ctlAction('next'));
   $('#ctlRandom').addEventListener('click',()=>ctlAction('random'));
   $('#ctlUndo').addEventListener('click',()=>ctlAction('undo'));
