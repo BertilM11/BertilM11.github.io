@@ -1,0 +1,25 @@
+# Despliegue con HTTPS automático (Let's Encrypt) mediante Caddy.
+# 1) Apunta un dominio (p. ej. api.tudominio.com) a la IP del servidor.
+# 2) cp .env.example .env  y rellénalo.
+# 3) DOMAIN=api.tudominio.com docker compose up -d --build
+services:
+  api:
+    build: .
+    env_file: .env
+    volumes:
+      - data:/data
+      # - ./AuthKey_XXXX.p8:/run/secrets/apns_key.p8:ro   # si usas APNs
+    restart: unless-stopped
+  caddy:
+    image: caddy:2
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN:?Define DOMAIN}
+    command: caddy reverse-proxy --from ${DOMAIN} --to api:8000
+    volumes:
+      - caddy:/data
+    restart: unless-stopped
+    depends_on: [api]
+volumes:
+  data:
+  caddy:
