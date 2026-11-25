@@ -12,3 +12,5 @@ Página personal con mis programas: https://bertilm11.github.io
 2. Agregar su tarjeta en el `index.html` principal.
 
 Fuentes: Lilita One y Nunito, con licencia SIL Open Font License (ver `assets/fonts`).
+
+Seguridad: ver [SECURITY.md](SECURITY.md).
